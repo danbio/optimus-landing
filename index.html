@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Optimus Energia Solar — Economize na sua conta de luz</title>
+  <meta name="description" content="Reduza sua conta de luz com energia solar em Gurupi-TO. Dimensionamento e visita técnica gratuitos. Garantia de eficiência de 25 anos.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <meta property="og:title" content="Optimus Energia Solar — Economize na sua conta de luz">
+  <meta property="og:description" content="Energia solar com instalação e financiamento facilitados. Atendemos Gurupi e região.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/">
+  <meta property="og:image" content="Assets/Images/Branco.png">
+</head>
+<body>
+  <header class="header">
+    <nav class="nav container">
+      <div class="nav__left">
+        <img src="Assets/Images/Branco.png" alt="Optimus Energia Solar" class="logo" />
+      </div>
+      <div class="nav__right">
+        <a href="#calculator" class="btn btn--ghost">Calcular economia</a>
+        <a href="#contact" class="btn btn--primary">Quero uma simulação</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="hero">
+      <div class="container hero__grid">
+        <div class="hero__content">
+          <h1>Reduza sua conta de luz em até <span class="highlight">95%</span></h1>
+          <p class="subtitle">Projeto completo com visita técnica gratuita e garantia de eficiência de 25 anos. Atendemos Gurupi e região.</p>
+          <div class="hero__actions">
+            <a class="btn btn--primary btn--lg" href="#contact">Quero economizar agora</a>
+            <a class="btn btn--ghost" href="#how">Como funciona</a>
+          </div>
+          <ul class="hero__bullets">
+            <li>Entrega do projeto até 30 dias</li>
+            <li>Revenda referência Intelbras</li>
+            <li>Atendimento rápido e local</li>
+          </ul>
+        </div>
+        <div class="hero__media">
+          <div class="hero__image"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="benefits" id="benefits">
+      <div class="container">
+        <h2>Por que escolher energia solar?</h2>
+        <div class="cards">
+          <article class="card"><h3>Economia</h3><p>Conta previsível e redução drástica no gasto mensal.</p></article>
+          <article class="card"><h3>Valorização</h3><p>Seu imóvel fica mais valorizado e moderno.</p></article>
+          <article class="card"><h3>Sustentabilidade</h3><p>Menos emissões e mais cuidado com o planeta.</p></article>
+          <article class="card"><h3>Garantia 25 anos</h3><p>Módulos com garantia de eficiência de 25 anos.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="how" id="how">
+      <div class="container">
+        <h2>Como funciona</h2>
+        <ol class="steps">
+          <li><strong>Simulação gratuita</strong> — Informe seus dados básicos.</li>
+          <li><strong>Visita técnica</strong> — Avaliação do telhado e rede.</li>
+          <li><strong>Projeto e proposta</strong> — Dimensionamento e orçamento.</li>
+          <li><strong>Instalação</strong> — Entrega do sistema e acompanhamento.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="calculator" id="calculator">
+      <div class="container">
+        <h2>Calculadora de economia</h2>
+        <p class="subtitle">Informe o valor médio da sua conta de luz</p>
+        <div class="calc__box">
+          <label for="valor-conta">Valor da conta (R$)</label>
+          <input type="number" id="valor-conta" min="0" step="0.01" placeholder="Ex.: 300" />
+          <div id="resultado-economia" class="calc__result"></div>
+          <div id="calc-summary" class="calc__summary"></div>
+          <div id="calc-fun" class="calc__fun" aria-label="O que essa economia pode comprar"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials" id="testimonials">
+      <div class="container">
+        <h2>Clientes satisfeitos</h2>
+        <div class="cards">
+          <article class="card"><p>“Atendimento rápido e a conta caiu muito.”</p><small>— Cliente em Gurupi</small></article>
+          <article class="card"><p>“Equipe excelente, recomendo!”</p><small>— Cliente em TO</small></article>
+          <article class="card"><p>“Instalação limpa e dentro do prazo.”</p><small>— Cliente em Gurupi</small></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq" id="faq">
+      <div class="container">
+        <h2>Dúvidas frequentes</h2>
+        <details><summary>Em quanto tempo o sistema se paga?</summary><p>Em média entre 3 a 5 anos, variando por consumo e tarifa local.</p></details>
+        <details><summary>Posso financiar?</summary><p>Sim, temos condições facilitadas conforme análise.</p></details>
+        <details><summary>Vocês atendem minha cidade?</summary><p>Atendemos Gurupi e região sul do Tocantins.</p></details>
+      </div>
+    </section>
+
+    <section class="final-cta" id="contact">
+      <div class="container">
+        <h2>Peça sua simulação gratuita</h2>
+        <form id="lead-form" class="form">
+          <div class="grid">
+            <label>Nome <input type="text" name="nome" required></label>
+            <label>WhatsApp <input type="tel" name="whats" required></label>
+            <label>Cidade <input type="text" name="cidade" required></label>
+            <label>Valor da última conta (R$) <input type="number" name="valor_conta" min="0" step="0.01" required></label>
+          </div>
+          <input type="text" name="website" class="hp" autocomplete="off" tabindex="-1" aria-hidden="true" />
+          <input type="hidden" name="recaptcha_token" id="recaptcha_token" />
+          <button type="submit" class="btn btn--primary btn--lg">Quero minha simulação</button>
+          <small class="consent">Ao enviar, você concorda com nossa <a href="/politica-de-privacidade.html" target="_blank">Política de Privacidade</a>.</small>
+          <div id="form-feedback" class="form__feedback" role="status" aria-live="polite"></div>
+        </form>
+        <address class="address">
+          Optimus Empreendimentos LTDA — Rua S-015, 178, Quadra 66, Lote 03, Parque Sol Nascente, Gurupi - TO, 77425-100, Brasil
+        </address>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__grid">
+      <small>© <span id="year"></span> Optimus Energia Solar. Todos os direitos reservados.</small>
+      <div class="footer__links">
+        <a href="/politica-de-privacidade.html">Política de Privacidade</a>
+        <a href="javascript:window.manageConsent()">Gerenciar consentimento</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Incluir banner de consentimento dinamicamente
+    fetch('snippets/consent-banner.html').then(r=>r.text()).then(html=>{
+      const wrap = document.createElement('div');
+      wrap.innerHTML = html; document.body.appendChild(wrap);
+    }).catch(()=>{});
+  </script>
+</body>
+</html>

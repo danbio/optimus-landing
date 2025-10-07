@@ -1,0 +1,76 @@
+<!-- Banner de consentimento compacto (LGPD) -->
+<div id="cookie-banner" style="position:fixed; left:16px; right:16px; bottom:16px; background:#0b1220; color:#fff; padding:12px 14px; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,.3); z-index:9999; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+  <span style="flex:1 1 260px; font-size:14px; line-height:1.4;">Usamos cookies essenciais e, com seu consentimento, de análise e marketing. <a href="/politica-de-privacidade.html" style="color:#93c5fd;">Saiba mais</a>.</span>
+  <div style="display:flex; gap:8px;">
+    <button id="btn-essentials" style="padding:8px 12px; background:#1f2937; color:#fff; border:1px solid #374151; border-radius:8px;">Somente essenciais</button>
+    <button id="btn-accept-all" style="padding:8px 12px; background:#f59e0b; color:#111827; border:none; border-radius:8px; font-weight:700;">Aceitar todos</button>
+  </div>
+  <button id="btn-close-banner" aria-label="Fechar" title="Fechar" style="margin-left:auto; background:transparent; border:none; color:#9CA3AF; font-size:18px; line-height:1;">×</button>
+</div>
+<script>
+(function(){
+  const key = 'optimus_consent_v1';
+  const banner = document.getElementById('cookie-banner');
+  function loadScripts(prefs){
+    // GA4
+    if (prefs.analytics && !window.__gaLoaded) {
+      window.__gaLoaded = true;
+      const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // substitua
+      if (GA_MEASUREMENT_ID && GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX') {
+        const s1 = document.createElement('script');
+        s1.async = true; s1.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+        document.head.appendChild(s1);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', GA_MEASUREMENT_ID, { anonymize_ip: true });
+      }
+    }
+    // Meta Pixel
+    if (prefs.marketing && !window.__fbqLoaded) {
+      window.__fbqLoaded = true;
+      const PIXEL_ID = 'XXXXXXXXXXXXXXX'; // substitua
+      if (PIXEL_ID && PIXEL_ID !== 'XXXXXXXXXXXXXXX') {
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', PIXEL_ID);
+        fbq('track', 'PageView');
+      }
+    }
+  }
+  function save(prefs){
+    try{ localStorage.setItem(key, JSON.stringify({ ...prefs, ts: Date.now() })); }catch(e){}
+    banner.style.display = 'none';
+    loadScripts(prefs);
+  }
+  // Estado inicial
+  try {
+    const saved = JSON.parse(localStorage.getItem(key) || 'null');
+    if (saved) { loadScripts(saved); banner.style.display = 'none'; }
+  } catch(e) {}
+
+  // Ações simples
+  document.getElementById('btn-accept-all')?.addEventListener('click', () => {
+    save({ analytics: true, marketing: true });
+  });
+  document.getElementById('btn-essentials')?.addEventListener('click', () => {
+    save({ analytics: false, marketing: false });
+  });
+  document.getElementById('btn-close-banner')?.addEventListener('click', () => {
+    // Fechar = manter somente essenciais por padrão
+    save({ analytics: false, marketing: false });
+  });
+
+  // Gerenciar depois via link no rodapé
+  window.manageConsent = function(){
+    banner.style.display = 'flex';
+  };
+})();
+</script>
