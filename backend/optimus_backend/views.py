@@ -3,11 +3,18 @@ import os
 import urllib.request
 
 from django.conf import settings
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def recaptcha_verify(request):
+    # CORS básico para dev (ajuste para produção)
+    if request.method == 'OPTIONS':
+        resp = HttpResponse()
+        resp['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
+        resp['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        resp['Access-Control-Allow-Headers'] = 'Content-Type'
+        return resp
     if request.method != 'POST':
         return HttpResponseBadRequest('invalid_method')
 
@@ -42,6 +49,10 @@ def recaptcha_verify(request):
     result_action = result.get('action')
 
     if success and score >= 0.5 and (result_action in (None, action)):
-        return JsonResponse({'ok': True, 'score': score})
+        resp = JsonResponse({'ok': True, 'score': score})
+        resp['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
+        return resp
     else:
-        return JsonResponse({'ok': False, 'error': 'recaptcha_failed', 'details': result}, status=403)
+        resp = JsonResponse({'ok': False, 'error': 'recaptcha_failed', 'details': result}, status=403)
+        resp['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
+        return resp

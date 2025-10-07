@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Formatter de moeda BRL com 2 casas
   const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const r2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
+  // API base (dev: frontend 5500 -> backend Django 8000)
+  const API_BASE = window.API_BASE || (location.port === '5500' ? 'http://127.0.0.1:8000' : '');
   // Ano no footer
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
 
@@ -72,19 +74,18 @@ document.addEventListener('DOMContentLoaded', () => {
       // Seção: o que essa economia pode comprar
       if (calcFun){
         const precos = {
-          onix: 95000,
-          corolla: 180000,
           hb20: 90000,
-          viagemNordeste: 6000, // por pessoa; casal = 12k
+          hilux: 320000,
+          viagemPortoDeGalinhas: 7000, // por pessoa; casal = 14k
           iphone: 7000,
           moto: 15000,
           piscina: 35000,
           painelSolarResidencial: 25000,
         };
         const itens = [
-          { kicker: 'Carro popular', label: 'Chevrolet Onix', qtd: Math.floor(acumulado25 / precos.onix) },
-          { kicker: 'Sedã médio', label: 'Toyota Corolla', qtd: Math.floor(acumulado25 / precos.corolla) },
-          { kicker: 'Viagens com acompanhante', label: 'Nordeste (7 dias)', qtd: Math.floor(acumulado25 / (precos.viagemNordeste*2)) },
+          { kicker: 'Carro popular', label: 'Hyundai HB20', qtd: Math.floor(acumulado25 / precos.hb20) },
+          { kicker: 'Picape média', label: 'Toyota Hilux', qtd: Math.floor(acumulado25 / precos.hilux) },
+          { kicker: 'Viagens com acompanhante', label: 'Porto de Galinhas (7 dias)', qtd: Math.floor(acumulado25 / (precos.viagemPortoDeGalinhas*2)) },
           { kicker: 'Top de linha', label: 'iPhone', qtd: Math.floor(acumulado25 / precos.iphone) },
           { kicker: 'Duas rodas', label: 'Moto 150cc', qtd: Math.floor(acumulado25 / precos.moto) },
           { kicker: 'Lazer em casa', label: 'Piscinas residenciais', qtd: Math.floor(acumulado25 / precos.piscina) },
@@ -113,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function verifyRecaptcha(token){
     try{
-      const r = await fetch('/api/recaptcha/verify/', { // ajuste para o host da API quando publicar
+      const r = await fetch(`${API_BASE}/api/recaptcha/verify/`, { // ajuste para o host da API quando publicar
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ token, action:'submit' })
       });
