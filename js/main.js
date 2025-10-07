@@ -133,7 +133,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     feedback.textContent = 'Enviando...';
 
-    // Se tiver reCAPTCHA v3 carregado, gera token e valida
+    async function submitLead(token){
+      const fd = new FormData(form);
+      const payload = Object.fromEntries(fd.entries());
+      payload.valor_conta = payload.valor_conta || payload['valor_conta'] || '';
+      if (token) payload.recaptcha_token = token;
+      try{
+        const r = await fetch(`${API_BASE}/api/leads/`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const data = await r.json().catch(()=>({ok:false}));
+        if (!r.ok || !data.ok){
+          throw new Error(data.error || `HTTP ${r.status}`);
+        }
+        feedback.textContent = 'Recebido! Em breve entraremos em contato.';
+        form.reset();
+      }catch(err){
+        feedback.textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
+      }
+    }
+
+    // Se tiver reCAPTCHA v3 carregado, gera token, valida e envia
     if (window.grecaptcha && window.RECAPTCHA_SITE_KEY){
       try{
         await grecaptcha.ready(async () => {
@@ -142,18 +163,13 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!res.ok || (res.score ?? 0) < 0.5){
             feedback.textContent = 'Falha na verificação anti-spam. Tente novamente.'; return;
           }
-          // Aqui, faça o envio real do lead (placeholder)
-          feedback.textContent = 'Recebido! Em breve entraremos em contato.';
-          form.reset();
+          await submitLead(token);
         });
       }catch{ feedback.textContent = 'Erro ao validar reCAPTCHA.'; }
       return;
     }
 
-    // Sem reCAPTCHA (modo dev), apenas simula sucesso
-    setTimeout(() => {
-      feedback.textContent = 'Recebido! Em breve entraremos em contato.';
-      form.reset();
-    }, 600);
+    // Sem reCAPTCHA (modo dev): envia mesmo assim
+    await submitLead(null);
   });
 });

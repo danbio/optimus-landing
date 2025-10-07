@@ -8,16 +8,18 @@
   --white:#fff;
   --shadow:0 10px 25px rgba(0,0,0,.08);
   --radius:12px;
+  /* Padding lateral padrão do grid (desktop) */
+  --container-pad:40px;
 }
 *{box-sizing:border-box}html,body{margin:0;padding:0}
 body{font-family:Inter, Roboto, system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif; color:var(--text); background:var(--bg);}
-.container{max-width:1120px;margin:0 auto;padding:0 20px}
+.container{max-width:1120px;margin:0 auto;padding:0 var(--container-pad)}
 .logo{height:40px}
 
 /* Header */
 .header{position:sticky;top:0;background:rgba(255,255,255,.9);backdrop-filter:saturate(180%) blur(8px);box-shadow:var(--shadow);z-index:50}
-.nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
-.nav__right{display:flex;gap:12px}
+.nav{display:flex;align-items:center;justify-content:flex-start;padding:12px 0}
+.nav__right{display:flex;gap:12px;margin-left:auto}
 
 /* Botões */
 .btn{display:inline-flex;align-items:center;justify-content:center;border-radius:10px;padding:10px 16px;font-weight:700;border:2px solid transparent;transition:.2s ease;cursor:pointer;text-decoration:none}
@@ -82,10 +84,16 @@ section h2{font-size:28px;margin:0 0 16px}
 
 /* Responsivo */
 @media (max-width: 900px){
+  :root{--container-pad:20px}
   .hero__grid{grid-template-columns:1fr}
   .cards{grid-template-columns:repeat(2,1fr)}
   .form .grid{grid-template-columns:1fr}
   .calc__summary{grid-template-columns:1fr}
+}
+
+/* Em telas muito largas, dá um pouco mais de respiro ainda */
+@media (min-width: 1440px){
+  :root{--container-pad:56px}
 }
 @media (max-width: 520px){
   .cards{grid-template-columns:1fr}

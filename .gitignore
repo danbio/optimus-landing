@@ -1,3 +1,7 @@
+# Secrets e arquivos locais
+local.env
+*.env
+backend/.env
 # OS
 .DS_Store
 Thumbs.db
