@@ -1,6 +1,8 @@
 import json
 import os
 import urllib.request
+import time
+import re
 
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
@@ -33,12 +35,41 @@ def _verify_recaptcha(token: str, remoteip: str | None) -> tuple[bool, float | N
     return success, score, result
 
 
+def _get_client_ip(request) -> str | None:
+    xff = request.META.get('HTTP_X_FORWARDED_FOR')
+    if xff:
+        return xff.split(',')[0].strip()
+    return request.META.get('REMOTE_ADDR')
+
+
+# Rate limiting simples em memória por processo
+_RATE_BUCKET: dict[str, list[float]] = {}
+_RATE_WINDOW = int(os.environ.get('LEAD_RATE_WINDOW', '60'))  # segundos
+_RATE_MAX = int(os.environ.get('LEAD_RATE_MAX', '30'))  # requisições por janela
+
+
+def _allow_request(ip: str | None) -> bool:
+    if not ip:
+        return True
+    now = time.time()
+    bucket = _RATE_BUCKET.setdefault(ip, [])
+    cutoff = now - _RATE_WINDOW
+    bucket = [t for t in bucket if t >= cutoff]
+    if len(bucket) >= _RATE_MAX:
+        _RATE_BUCKET[ip] = bucket
+        return False
+    bucket.append(now)
+    _RATE_BUCKET[ip] = bucket
+    return True
+
+
 @csrf_exempt
 def create_lead(request):
-    # CORS básico para dev
+    # CORS básico para dev (em produção usar corsheaders)
     if request.method == 'OPTIONS':
         resp = HttpResponse()
-        resp['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
+        if settings.DEBUG:
+            resp['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
         resp['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
         resp['Access-Control-Allow-Headers'] = 'Content-Type'
         return resp
@@ -62,36 +93,60 @@ def create_lead(request):
     if not (nome and whats and cidade and valor_conta not in (None, '')):
         return JsonResponse({'ok': False, 'error': 'missing_fields'}, status=400)
 
-    # Tenta converter valor_conta
+    # Converter valor_conta (aceita vírgula)
     try:
-        valor_conta = round(float(valor_conta), 2)
+        valor_conta = round(float(str(valor_conta).replace(',', '.')), 2)
     except Exception:
         return JsonResponse({'ok': False, 'error': 'invalid_valor_conta'}, status=400)
 
-    # reCAPTCHA: se houver token, valida. Se não houver, em DEBUG aceita, em produção exige.
+    # Faixa razoável
+    if not (0 <= valor_conta <= 200000):
+        return JsonResponse({'ok': False, 'error': 'valor_conta_out_of_range'}, status=400)
+
+    # Normaliza telefone
+    whats_digits = re.sub(r'\D+', '', whats)
+    if len(whats_digits) < 10 or len(whats_digits) > 13:
+        return JsonResponse({'ok': False, 'error': 'invalid_whats'}, status=400)
+
+    # Nome/Cidade tamanho mínimo
+    if len(nome) < 2 or len(cidade) < 2:
+        return JsonResponse({'ok': False, 'error': 'invalid_name_or_city'}, status=400)
+
+    # reCAPTCHA
     recaptcha_score = None
     if token:
-        ok, score, details = _verify_recaptcha(token, request.META.get('REMOTE_ADDR'))
+        ok, score, details = _verify_recaptcha(token, _get_client_ip(request))
         if not ok or (score is not None and score < 0.5):
             resp = JsonResponse({'ok': False, 'error': 'recaptcha_failed', 'details': details}, status=403)
-            resp['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
+            if settings.DEBUG:
+                resp['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
             return resp
         recaptcha_score = score
     else:
         if not settings.DEBUG:
             return JsonResponse({'ok': False, 'error': 'recaptcha_required'}, status=400)
 
+    # Rate limit
+    ip = _get_client_ip(request)
+    if not _allow_request(ip):
+        resp = JsonResponse({'ok': False, 'error': 'rate_limited'}, status=429)
+        if settings.DEBUG:
+            resp['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
+        return resp
+
     lead = Lead.objects.create(
         nome=nome,
-        whats=whats,
+        whats=whats_digits,
         cidade=cidade,
         valor_conta=valor_conta,
         consent=consent,
         recaptcha_score=recaptcha_score,
-        ip=request.META.get('REMOTE_ADDR'),
-        user_agent=request.META.get('HTTP_USER_AGENT'),
+        ip=ip,
+        user_agent=(request.META.get('HTTP_USER_AGENT') or '')[:500],
     )
 
     resp = JsonResponse({'ok': True, 'id': lead.pk})
-    resp['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
+    if settings.DEBUG:
+        resp['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
     return resp
+

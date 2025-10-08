@@ -29,7 +29,7 @@ Projeto: Optimus Energia Solar
 
 ## 8) Branding
 - Marca: Optimus Energia Solar
-- Paleta de cores: #00A335, #EB741F, #507888
+- Paleta de cores: Principais #00A335, #00863F, Destaque #EB741F, Secundárias #507888, #3e5055, #8b979f
 - Tipografias:        
         <font-family: font-family: "SF Pro", "Roboto", "Arial", "Helvetica", sans-serif;>
 - Logo/fotos/vídeos: sim (logo em assets/images)
