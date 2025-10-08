@@ -297,8 +297,8 @@ section:not(:last-child)::after{
 .whatsapp-float {
   position: fixed;
   bottom: 20px;
-  right: 20px;
-  z-index: 1000;
+  left: 20px;
+  z-index: 9999;
   animation: whatsapp-pulse 2s infinite;
 }
 
@@ -347,7 +347,7 @@ section:not(:last-child)::after{
 @media (max-width: 768px) {
   .whatsapp-float {
     bottom: 15px;
-    right: 15px;
+    left: 15px;
   }
   
   .whatsapp-btn {
@@ -366,6 +366,13 @@ section:not(:last-child)::after{
     justify-content: center;
     padding: 0;
   }
+}
+
+/* Ajustar reCAPTCHA para não conflitar */
+.grecaptcha-badge {
+  z-index: 1000 !important;
+  bottom: 14px !important;
+  right: 14px !important;
 }
 
 /* Updated 10/07/2025 16:32:05 */
