@@ -306,6 +306,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         feedback.textContent = 'Recebido! Em breve entraremos em contato.';
         
+        // Abrir WhatsApp com dados do lead
+        const whatsappMsg = `Olá! Acabei de enviar uma simulação pela landing page.
+        
+🏠 Nome: ${payload.nome}
+📧 Email: ${payload.email}
+📱 Telefone: ${payload.telefone}
+💡 Conta de luz: R$ ${payload.valor_conta}
+🏢 Tipo: ${payload.tipo_imovel}
+
+Gostaria de conversar sobre energia solar!`;
+        
+        const whatsappUrl = `https://wa.me/556333010717?text=${encodeURIComponent(whatsappMsg)}`;
+        
+        // Abrir WhatsApp após 2 segundos
+        setTimeout(() => {
+          window.open(whatsappUrl, '_blank');
+        }, 2000);
+        
         // Evento de conversão para Google Analytics
         track('generate_lead', {
           event_category: 'engagement',
