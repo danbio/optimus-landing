@@ -7,6 +7,145 @@ document.addEventListener('DOMContentLoaded', () => {
   // Ano no footer
   const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
 
+  // Função para capitalizar primeira letra de cada palavra
+  function capitalize(str) {
+    const preposicoes = ['da', 'de', 'do', 'e', 'das', 'dos'];
+    return str.replace(/\b[\w\u00C0-\u017F]+/g, (word, index) => {
+      const lowerWord = word.toLowerCase();
+      // Primeira palavra sempre maiúscula, preposições ficam minúsculas
+      if (index === 0 || !preposicoes.includes(lowerWord)) {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      }
+      return lowerWord;
+    });
+  }
+
+  // Formatador de moeda brasileira para input
+  function formatCurrency(value) {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, '');
+    // Converte para centavos
+    const amount = parseFloat(numbers) / 100;
+    
+    // Limite máximo: R$ 100.000.000,00
+    const maxAmount = 100000000;
+    if (amount > maxAmount) {
+      const limitedNumbers = (maxAmount * 100).toString();
+      const limitedAmount = parseFloat(limitedNumbers) / 100;
+      return limitedAmount.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+        minimumFractionDigits: 2
+      });
+    }
+    
+    // Formata como moeda brasileira
+    if (isNaN(amount) || amount === 0) return '';
+    return amount.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2
+    });
+  }
+
+  // Formatador de telefone brasileiro
+  function formatPhone(value) {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, '');
+    
+    // Limita a 11 dígitos (DDD + 9 dígitos)
+    const limited = numbers.slice(0, 11);
+    
+    // Aplica máscara baseada no tamanho
+    if (limited.length <= 2) {
+      return limited;
+    } else if (limited.length <= 6) {
+      return `(${limited.slice(0, 2)}) ${limited.slice(2)}`;
+    } else if (limited.length <= 10) {
+      return `(${limited.slice(0, 2)}) ${limited.slice(2, 6)}-${limited.slice(6)}`;
+    } else {
+      return `(${limited.slice(0, 2)}) ${limited.slice(2, 3)} ${limited.slice(3, 7)}-${limited.slice(7, 11)}`;
+    }
+  }
+
+  // Validador de telefone brasileiro
+  function isValidPhone(phone) {
+    const numbers = phone.replace(/\D/g, '');
+    // Deve ter 10 ou 11 dígitos (DDD + número)
+    if (numbers.length < 10 || numbers.length > 11) return false;
+    
+    // DDD deve estar entre 11 e 99
+    const ddd = parseInt(numbers.slice(0, 2));
+    if (ddd < 11 || ddd > 99) return false;
+    
+    // Se tem 11 dígitos, o 3º deve ser 9 (celular)
+    if (numbers.length === 11 && numbers[2] !== '9') return false;
+    
+    return true;
+  }
+
+    // Configurar campos com formatação automática
+  const nomeField = document.querySelector('input[name="nome"]');
+  const cidadeField = document.querySelector('input[name="cidade"]');
+  const valorContaField = document.querySelector('input[name="valor_conta"]');
+  const whatsField = document.querySelector('input[name="whats"]');
+
+  // Capitalização automática para nome e cidade
+  [nomeField, cidadeField].forEach(field => {
+    if (field) {
+      field.addEventListener('input', (e) => {
+        const start = e.target.selectionStart;
+        const end = e.target.selectionEnd;
+        e.target.value = capitalize(e.target.value);
+        e.target.setSelectionRange(start, end);
+      });
+    }
+  });
+
+  // Formatação de telefone brasileiro
+  if (whatsField) {
+    whatsField.placeholder = '(11) 9 9999-9999';
+    whatsField.addEventListener('input', (e) => {
+      const formatted = formatPhone(e.target.value);
+      e.target.value = formatted;
+      
+      // Validação visual
+      const isValid = isValidPhone(formatted);
+      if (formatted.length > 0) {
+        e.target.style.borderColor = isValid ? '#10B981' : '#EF4444';
+      } else {
+        e.target.style.borderColor = '';
+      }
+    });
+  }
+
+  // Formatação de moeda para valor da conta
+  if (valorContaField) {
+    valorContaField.type = 'text';
+    valorContaField.inputMode = 'numeric';
+    valorContaField.placeholder = 'R$ 0,00';
+    
+    valorContaField.addEventListener('input', (e) => {
+      const formatted = formatCurrency(e.target.value);
+      e.target.value = formatted;
+    });
+
+    // Remove formatação para envio do formulário
+    valorContaField.addEventListener('blur', (e) => {
+      if (e.target.value) {
+        const numbers = e.target.value.replace(/\D/g, '');
+        const amount = Math.min(parseFloat(numbers) / 100, 100000000);
+        e.target.dataset.rawValue = amount.toString();
+      }
+    });
+  }
+
+  // Helper analytics
+  function track(event, params={}){
+    try{ if (window.gtag) window.gtag('event', event, params); }catch(e){}
+    try{ if (window.fbq) window.fbq('trackCustom', event, params); }catch(e){}
+  }
+
   // Scroll suave
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
@@ -124,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    track('lead_submit_attempt');
 
     // Honeypot
     const hp = form.querySelector('input[name="website"]');
@@ -131,12 +271,29 @@ document.addEventListener('DOMContentLoaded', () => {
       feedback.textContent = 'Erro de validação.'; return;
     }
 
+    // Validação de telefone
+    const whatsInput = form.querySelector('input[name="whats"]');
+    if (whatsInput && !isValidPhone(whatsInput.value)) {
+      feedback.textContent = 'Por favor, insira um número de WhatsApp válido.';
+      whatsInput.focus();
+      return;
+    }
+
     feedback.textContent = 'Enviando...';
 
     async function submitLead(token){
       const fd = new FormData(form);
       const payload = Object.fromEntries(fd.entries());
-      payload.valor_conta = payload.valor_conta || payload['valor_conta'] || '';
+      
+      // Usar valor numérico do campo de moeda se disponível
+      if (valorContaField && valorContaField.dataset.rawValue) {
+        payload.valor_conta = valorContaField.dataset.rawValue;
+      } else if (payload.valor_conta) {
+        // Fallback: extrair números do valor formatado
+        const numbers = payload.valor_conta.replace(/\D/g, '');
+        payload.valor_conta = (parseFloat(numbers) / 100).toString();
+      }
+      
       if (token) payload.recaptcha_token = token;
       try{
         const r = await fetch(`${API_BASE}/api/leads/`, {
@@ -148,9 +305,20 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error(data.error || `HTTP ${r.status}`);
         }
         feedback.textContent = 'Recebido! Em breve entraremos em contato.';
+        
+        // Evento de conversão para Google Analytics
+        track('generate_lead', {
+          event_category: 'engagement',
+          event_label: 'lead_form_submit',
+          value: payload.valor_conta || 0
+        });
+        
+        // Evento do Meta Pixel (quando habilitado)
+        try{ if (window.fbq) window.fbq('track','Lead'); }catch(e){}
         form.reset();
       }catch(err){
         feedback.textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
+        track('lead_submit_error', { reason: (err && err.message) || 'unknown' });
       }
     }
 

@@ -1,4 +1,23 @@
-<!-- Banner de consentimento compacto (LGPD) -->
+<!-- Banner de consentimento    }
+    // Meta Pixel - DESABILITADO (adicione o PIXEL_ID quando necessário)
+    /*
+    if (prefs.marketing && !window.__fbqLoaded) {
+      window.__fbqLoaded = true;
+      const PIXEL_ID = (window.FB_PIXEL_ID || 'XXXXXXXXXXXXXXX'); // substitua
+      if (PIXEL_ID && PIXEL_ID !== 'XXXXXXXXXXXXXXX') {
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', PIXEL_ID);
+        fbq('track', 'PageView');
+      }
+    }
+    */->
 <div id="cookie-banner" style="position:fixed; left:16px; right:16px; bottom:16px; background:#0b1220; color:#fff; padding:12px 14px; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,.3); z-index:9999; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
   <span style="flex:1 1 260px; font-size:14px; line-height:1.4;">Usamos cookies essenciais e, com seu consentimento, de análise e marketing. <a href="/politica-de-privacidade.html" style="color:#93c5fd;">Saiba mais</a>.</span>
   <div style="display:flex; gap:8px;">
@@ -15,7 +34,7 @@
     // GA4
     if (prefs.analytics && !window.__gaLoaded) {
       window.__gaLoaded = true;
-      const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // substitua
+      const GA_MEASUREMENT_ID = 'G-KY21TQ4FPS'; // ID do Google Analytics
       if (GA_MEASUREMENT_ID && GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX') {
         const s1 = document.createElement('script');
         s1.async = true; s1.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
@@ -30,7 +49,7 @@
     // Meta Pixel
     if (prefs.marketing && !window.__fbqLoaded) {
       window.__fbqLoaded = true;
-      const PIXEL_ID = 'XXXXXXXXXXXXXXX'; // substitua
+      const PIXEL_ID = (window.FB_PIXEL_ID || 'XXXXXXXXXXXXXXX'); // substitua
       if (PIXEL_ID && PIXEL_ID !== 'XXXXXXXXXXXXXXX') {
         !function(f,b,e,v,n,t,s)
         {if(f.fbq)return;n=f.fbq=function(){n.callMethod?

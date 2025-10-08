@@ -1,8 +1,27 @@
-/* Variáveis */
+/* Variáveis - Hierarquia de Cores Organizada */
 :root{
-  --primary:#00A335; /* verde */
+  /* 
+    CORES PRINCIPAIS - Identidade visual forte
+    Uso: CTAs principais, elementos de marca, navegação
+  */
+  --primary:#00A335; /* verde principal */
+  --primary-dark:#00863F; /* verde escuro */
+  
+  /* 
+    COR DE DESTAQUE - Conversão e ações importantes
+    Uso: Botões de conversão, highlights, chamadas urgentes
+  */
   --accent:#EB741F; /* laranja */
-  --muted:#507888; /* azul acinzentado */
+  
+  /* 
+    CORES SECUNDÁRIAS - Suporte e neutralidade
+    Uso: Textos secundários, backgrounds, elementos discretos
+  */
+  --secondary:#507888; /* azul acinzentado */
+  --secondary-dark:#3e5055; /* azul escuro */
+  --secondary-light:#8b979f; /* azul claro */
+  
+  /* Cores Base */
   --text:#111827;
   --bg:#F8FAFC;
   --white:#fff;
@@ -23,46 +42,78 @@ body{font-family:Inter, Roboto, system-ui, -apple-system, Segoe UI, Helvetica, A
 
 /* Botões */
 .btn{display:inline-flex;align-items:center;justify-content:center;border-radius:10px;padding:10px 16px;font-weight:700;border:2px solid transparent;transition:.2s ease;cursor:pointer;text-decoration:none}
-.btn--primary{background:var(--primary);color:var(--white)}
-.btn--primary:hover{filter:brightness(.95)}
-.btn--ghost{background:transparent;border-color:#D1D5DB;color:var(--text)}
-.btn--ghost:hover{background:#F3F4F6}
+.btn--primary{background:var(--accent);color:var(--white);box-shadow:0 4px 12px rgba(235,116,31,0.4)}
+.btn--primary:hover{background:#D6660A;transform:translateY(-1px)}
+.btn--secondary{background:var(--secondary);color:var(--white);box-shadow:0 4px 12px rgba(80,120,136,0.4)}
+.btn--secondary:hover{background:var(--secondary-dark);transform:translateY(-1px)}
+.btn--ghost{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.3);color:var(--white);backdrop-filter:blur(10px)}
+.btn--ghost:hover{background:rgba(255,255,255,0.25)}
+/* Botão ghost em seções normais */
+section:not(.hero):not(.final-cta) .btn--ghost{background:transparent;border-color:var(--primary);color:var(--primary)}
+section:not(.hero):not(.final-cta) .btn--ghost:hover{background:var(--primary);color:var(--white)}
 .btn--lg{padding:14px 20px;font-size:1.05rem}
 
 /* Hero */
-.hero{padding:80px 0 40px;background:linear-gradient(180deg,#ffffff 0%, #f2f6fb 100%)}
+.hero{padding:60px 0 28px;background:linear-gradient(135deg, var(--primary) 0%, #00B83A 50%, #009E30 100%);color:var(--white)}
 .hero__grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
-.hero h1{font-size:40px;line-height:1.1;margin:0 0 12px}
-.highlight{color:var(--accent)}
-.subtitle{color:#4b5563;margin:0 0 16px}
+.hero h1{font-size:40px;line-height:1.1;margin:0 0 12px;color:var(--white)}
+.highlight{color:#FFD700;text-shadow:0 2px 4px rgba(0,0,0,0.3)}
+.subtitle{color:rgba(255,255,255,0.9);margin:0 0 16px}
 .hero__actions{display:flex;gap:12px;margin:12px 0 16px}
-.hero__bullets{list-style:none;padding:0;margin:0;display:grid;gap:6px;color:#374151}
-.hero__image{height:320px;border-radius:16px;background:url('../Assets/Images/Fundo Azul Quadrado.png') center/cover no-repeat;box-shadow:var(--shadow)}
+.hero__bullets{list-style:none;padding:0;margin:0;display:grid;gap:6px;color:rgba(255,255,255,0.85)}
+.hero__image{height:320px;border-radius:16px;background:url('../Assets/Images/Casa_Energia_Solar.png') center/cover no-repeat;box-shadow:var(--shadow);border:3px solid rgba(255,255,255,0.2)}
 
 /* Sections */
-section{padding:56px 0}
+section{padding:32px 0}
 section h2{font-size:28px;margin:0 0 16px}
+
+/* Seções com backgrounds alternados */
+section:nth-of-type(even){background:linear-gradient(135deg, var(--bg) 0%, #f0f4f8 100%)}
+section:nth-of-type(odd):not(.hero):not(.final-cta){background:var(--white)}
+
+/* Seção especial com imagem de módulo solar */
+section:nth-of-type(3){background:linear-gradient(135deg, rgba(0,163,53,0.03) 0%, rgba(245,250,255,1) 100%)}
+
+/* Faixa decorativa entre seções com gradientes rotativos */
+section:not(:last-child)::after{
+  content:'';
+  display:block;
+  height:3px;
+  margin-top:32px;
+  background:var(--primary);
+}
+
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+.card{background:var(--white);border:1px solid #e5e7eb;border-radius:12px;padding:20px;box-shadow:var(--shadow);transition:all 0.3s ease;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--primary)}
+.card:nth-child(2)::before{background:var(--primary-dark)}
+.card:nth-child(3)::before{background:var(--accent)}
+.card:nth-child(4)::before{background:var(--secondary)}
+.card:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,.15);border-color:var(--primary)}
+.card h3{margin:0 0 12px;font-size:1.1rem;color:var(--text)}
+.card p{margin:0;color:var(--secondary);line-height:1.5}
 .steps{display:grid;gap:8px;color:#374151}
 
 /* Calculadora */
 .calc__box{display:grid;gap:10px;max-width:520px}
-.calc__box input{padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px}
-.calc__result{margin-top:8px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px}
+.calc__box input{padding:12px 14px;border:2px solid var(--primary);border-radius:10px;transition:all 0.3s ease}
+.calc__box input:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px rgba(235,116,31,0.1)}
+.calc__result{margin-top:8px;background:var(--primary);color:var(--white);border:none;border-radius:10px;padding:16px;font-weight:600}
 .calc__summary{margin-top:10px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.calc__summary > div{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px}
-.calc__summary h4{margin:0 0 6px;font-size:.95rem;color:#374151}
-.calc__summary strong{font-size:1.05rem}
-.calc__chart{margin-top:12px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px}
+.calc__summary > div{background:var(--white);border:2px solid var(--primary);border-radius:10px;padding:12px;transition:all 0.3s ease}
+.calc__summary > div:hover{transform:scale(1.02);border-color:var(--accent)}
+.calc__summary h4{margin:0 0 6px;font-size:.95rem;color:var(--text)}
+.calc__summary strong{font-size:1.05rem;color:var(--accent)}
+.calc__chart{margin-top:12px;background:var(--white);border:2px solid var(--secondary);border-radius:10px;padding:12px}
 .calc__chart svg{width:100%;height:180px;display:block}
 /* Seção divertida: o que a economia compra */
-.calc__fun{margin-top:12px;background:#06111a;color:#fff;border:1px solid #0b2233;border-radius:12px;padding:14px;box-shadow:var(--shadow)}
+.calc__fun{margin-top:12px;background:var(--secondary-dark);color:#fff;border:1px solid var(--secondary);border-radius:12px;padding:14px;box-shadow:var(--shadow)}
 .calc__fun h4{margin:0 0 8px;font-size:1.05rem;color:#e2f0ff}
 .calc__fun .items{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.calc__fun .item{background:#0b1b27;border:1px solid #123047;border-radius:10px;padding:12px}
+.calc__fun .item{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:12px;transition:all 0.3s ease}
+.calc__fun .item:hover{transform:translateY(-2px);background:rgba(255,255,255,0.15)}
 .calc__fun .item .kicker{font-size:.75rem;letter-spacing:.06em;color:#93c5fd;text-transform:uppercase}
-.calc__fun .item .big{font-size:1.6rem;font-weight:800;color:#22d3ee}
+.calc__fun .item .big{font-size:1.6rem;font-weight:800;color:var(--white)}
 .calc__fun .item .label{color:#cbe7ff;opacity:.9}
 @media (max-width: 900px){.calc__fun .items{grid-template-columns:1fr}}
 
@@ -70,17 +121,156 @@ section h2{font-size:28px;margin:0 0 16px}
 .testimonials .card p{margin:0 0 6px}
 
 /* Formulário */
+.final-cta{background:linear-gradient(135deg, var(--primary) 0%, #007A28 100%);color:var(--white)}
+.final-cta h2{color:var(--white)}
 .form .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.form label{display:grid;gap:6px;color:#374151;font-size:.95rem}
-.form input{padding:12px;border:1px solid #e5e7eb;border-radius:10px}
+.form label{display:grid;gap:6px;color:rgba(255,255,255,0.9);font-size:.95rem}
+.form input{padding:12px;border:1px solid rgba(255,255,255,0.3);border-radius:10px;background:rgba(255,255,255,0.1);color:var(--white);backdrop-filter:blur(10px)}
+.form input::placeholder{color:rgba(255,255,255,0.7)}
+.form input:focus{border-color:var(--accent);outline:none;background:rgba(255,255,255,0.2)}
 .form .hp{position:absolute;left:-5000px}
-.form__feedback{margin-top:10px;min-height:22px;color:#065f46}
-.address{margin-top:16px;color:#4b5563}
+.form button[type="submit"]{margin-top:16px;background:var(--white);color:var(--primary);border:none;box-shadow:0 4px 12px rgba(255,255,255,0.3);font-weight:700}
+.form button[type="submit"]:hover{background:#F0F0F0;transform:translateY(-1px)}
+.form .consent{display:block;margin-top:8px;color:rgba(255,255,255,0.8);font-size:0.85rem}
+.form .consent a{color:#FFD700}
+.form__feedback{margin-top:10px;min-height:22px;color:#B7F5C7}
 
 /* Footer */
-.footer{padding:20px 0;border-top:1px solid #e5e7eb;background:#fff}
-.footer__grid{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.footer__links{display:flex;gap:16px}
+.footer {
+  margin-top: 24px;
+  padding: 32px 0 16px;
+  border-top: 1px solid var(--secondary-dark);
+  background: var(--secondary-dark);
+  color: var(--white);
+}
+
+.footer__main {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1.5fr;
+  gap: 40px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .footer__main {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.footer__company h3 {
+  margin: 8px 0 12px;
+  font-size: 1.25rem;
+  color: var(--white);
+  font-weight: 700;
+}
+
+.footer__company p {
+  color: rgba(255,255,255,0.8);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer__logo {
+  height: 48px;
+  margin-bottom: 8px;
+  display: block;
+  filter: brightness(0) invert(1); /* Torna logo branca */
+}
+
+.footer h4 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  color: var(--white);
+  font-weight: 600;
+}
+
+.contact-list,
+.services-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.contact-list li {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.contact-list strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.contact-list a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.contact-list a:hover {
+  text-decoration: underline;
+  color: #ff8c42;
+}
+
+.location-address {
+  font-style: normal;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+}
+
+/* Mapa no footer */
+.footer__map {
+  margin-top: 12px;
+}
+
+.footer__map iframe {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease;
+}
+
+.footer__map iframe:hover {
+  transform: scale(1.02);
+}
+
+.footer__divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  margin: 0;
+}
+
+.footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 20px;
+}
+
+.footer__bottom small {
+  color: rgba(255,255,255,0.7);
+}
+
+.footer__links {
+  display: flex;
+  gap: 16px;
+}
+
+.footer__links a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.footer__links a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
 
 /* Responsivo */
 @media (max-width: 900px){
@@ -89,6 +279,7 @@ section h2{font-size:28px;margin:0 0 16px}
   .cards{grid-template-columns:repeat(2,1fr)}
   .form .grid{grid-template-columns:1fr}
   .calc__summary{grid-template-columns:1fr}
+  .footer__main{grid-template-columns:1fr 1fr;gap:24px}
 }
 
 /* Em telas muito largas, dá um pouco mais de respiro ainda */
@@ -98,4 +289,8 @@ section h2{font-size:28px;margin:0 0 16px}
 @media (max-width: 520px){
   .cards{grid-template-columns:1fr}
   .hero h1{font-size:32px}
+  .footer__main{grid-template-columns:1fr;gap:24px}
+  .footer__bottom{flex-direction:column;align-items:flex-start;gap:12px}
 }
+
+/* Updated 10/07/2025 16:32:05 */
