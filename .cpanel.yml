@@ -1,18 +1,10 @@
-# Deployment configuration for Hostinger
-# This ensures files are deployed to the correct directory
-
-# Deploy only the web files, not the entire repository
-exclude = [
-    '.git',
-    '.vscode',
-    'backend',
-    'README.md',
-    'Questionario_Inicial.md',
-    'start-dev.ps1',
-    'deploy.ps1',
-    '.deploy.conf'
-]
-
-# Ensure files go to document root
-target = "/public_html"
-branch = "master"
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/user/public_html
+    - /bin/cp index.html $DEPLOYPATH
+    - /bin/cp politica-de-privacidade.html $DEPLOYPATH
+    - /bin/cp .htaccess $DEPLOYPATH
+    - /bin/cp -R css $DEPLOYPATH
+    - /bin/cp -R js $DEPLOYPATH
+    - /bin/cp -R Assets $DEPLOYPATH
